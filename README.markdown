@@ -7,4 +7,4 @@ See .js file for code and documentation.
 
 You can use this code for whatever purpose you want.
 
-http://www.estadobeta.com
+(http://www.estadobeta.com)[http://www.estadobeta.com]
