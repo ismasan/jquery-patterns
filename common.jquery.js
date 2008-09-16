@@ -197,3 +197,84 @@ var Element = {
 	}
 }
 
+/*
+Hover effect for links
+- usage:
+hides link targets in the document, applies hover effect to each link to show given target element.
+
+Applies "current" CSS class to last A hovered.
+
+<ul class="js_hover_gallery">
+	<li><a rel="#box1">Box 1</a></li>
+	<li><a rel="#box2">Box 2</a></li>
+	<li><a rel="#box3">Box 3</a></li>
+</ul>
+<div id="box1" class="presenter_box">This is box 1</div>
+<div id="box2" class="presenter_box">This is box 2</div>
+<div id="box3" class="presenter_box">This is box 3</div>
+
+$('.js_hover_gallery').hoverize();
+
+You can pass an optional "onHover" calback. It receives the anchor tag and it's target as jQuery objects.
+
+$('.js_hover_gallery').hoverize( 
+	{
+		onHover:function(a,target){
+			alert(target);
+		}
+	} 
+);
+---------------------------------------------------------*/
+;(function($){
+	$.hoverize = function(element,opts){
+		var elem = element;
+		var links = elem.find('a');
+		var current = null;
+		var opts = $.extend($.hoverize.options,opts);
+		
+		var getTarget = function(a){
+			return $(a.attr('rel'));
+		};
+		var hide = function(a){
+			getTarget(a).hide();
+			a.removeClass('current');
+		};
+		links.mouseover(function(){
+			if(current)hide(current);
+			current = $(this);
+			current.addClass('current');
+			getTarget(current).show()
+			opts.onHover(current,getTarget(current));
+		});
+		links.each(function(){hide($(this))});
+		if(links.length > 0)
+			$(links[0]).trigger('mouseover');
+	};
+	$.hoverize.options = {
+		onHover: function(a,target){}
+	};
+	// Each UL is an instance so we can have more than one per page
+	$.fn.hoverize = function(opts){
+		$(this).each(function(){
+			new $.hoverize($(this),opts || {});
+		});
+	}
+})(jQuery);
+
+/*
+Adjust column height to the highest in the group. 
+Useful when we have HTML columns with variable content and we want to make sure all of them have equal heights.
+
+$('div.columns').equalHeight();
+---------------------------------------------------------*/
+;(function($){
+	
+	$.fn.equalHeight = function(){
+		var max_height = 0;
+		$(this).each(function(){
+			var h = $(this).height();
+			if(h > max_height)max_height = h;
+		});
+		$(this).css('height',max_height+'px');
+	}
+})(jQuery);
