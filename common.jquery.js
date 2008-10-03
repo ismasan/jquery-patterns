@@ -92,76 +92,80 @@ speed: 		fade speed in milliseconds. Defaults to 1000
 /*
 Super simple tabs.
 tabifies the following structure:
-
+ 
 <ul class="js_tabs">
-	<li><a href="#area_1">Area 1</a></li>
-	<li><a href="#area_2">Area 2</a></li>
+  <li><a href="#area_1">Area 1</a></li>
+  <li><a href="#area_2">Area 2</a></li>
 </ul>
 <div id="area_1">blah</div>
 <div id="area_2">blih</div>
-
+ 
 hides all but first div. Applies class="current" to first LI.
-
+ 
 USAGE:
 $('.js_tabs').tabify();
-
+ 
 OPTIONS:
 :: speed: speed in milliseconds to open panels
 :: show: panel/tab to open on page load. Can be 'first' or a zero-based index.
 :: close_link: an optional CSS selector for a link inside each panel that closes the panel
 :: tab: selector for links to apply the behaviour to. Defaults to all links inside UL.
+:: hide_self: (boolean) allow current link to hide it's target
 ----------------------------------------------------------------------------------------*/
 (function($){
-	$.tabify = function(elem,opts){
-		var o = $.extend({
-			speed: 0,
-			show: 'first',
-			close_link:false,
-			tab: 'li a'
-		},opts);
-		this.elem = elem;
-		var self = this;
-		var current = null;
-		var links = this.elem.find(o.tab);
-		var show = function(){
-			if(current){
-				hide(current,o.speed);
-			}
-			if(current && current.attr('href') == $(this).attr('href')){//close
-				current = null;
-				return false;
-			}
-			var target = $(this).attr('href');
-			$(target).show(o.speed);
-			$(this).parents('li').addClass('current');
-			current = $(this);
-			$(this).blur();
-			return false;
-		};
-		var hide = function(a,s){
-			var target = a.attr('href');
-			$(target).hide(s);
-			$(a).parents('li').removeClass('current');
-		};
-		$.each(links,function(){hide($(this),0)});
-		links.click(show);
-		if(links.length > 0 && o.show){
-			var index = (o.show == 'first')?0:o.show;
-			$(links[index]).trigger('click');
-		}
-		if(o.close_link){
-			$.each(links,function(){
-				var a = $(this);
-				var close_link = $($(this).attr('href')+' '+o.close_link);
-				close_link.click(function(){hide(a,0)});
-			});
-		}
-	}
-	$.fn.tabify = function(opts){
-		$.each($(this),function(){
-			new $.tabify($(this),opts);
-		});
-	}
+  $.tabify = function(elem,opts){
+    var o = $.extend({
+      speed: 0,
+      show: 'first',
+      close_link:false,
+      tab: 'li a',
+	  hide_self:true
+    },opts);
+    this.elem = elem;
+    var self = this;
+    var current = null;
+    var links = this.elem.find(o.tab);
+    var show = function(){
+      if(current){
+		// if()
+        hide(current,o.speed);
+      }
+	  var is_current = (current!=null && current.attr('href') == $(this).attr('href'));
+      if(o.hide_self && is_current){//close
+        current = null;
+        return false;
+      }
+      var target = $(this).attr('href');
+      $(target).show(o.speed);
+      $(this).parents('li').addClass('current');
+      current = $(this);
+      $(this).blur();
+      return false;
+    };
+    var hide = function(a,s){
+      var target = a.attr('href');
+      $(target).hide(s);
+      $(a).parents('li').removeClass('current');
+    };
+    $.each(links,function(){hide($(this),0)});
+    links.click(show);
+    if(links.length > 0 && o.show){
+      var index = (o.show == 'first')?0:o.show;
+      $(links[index]).trigger('click');
+    }
+    if(o.close_link){
+      $.each(links,function(){
+        var a = $(this);
+        var close_link = $($(this).attr('href')+' '+o.close_link);
+        close_link.click(function(){hide(a,0)});
+      });
+    }
+  }
+  $.fn.tabify = function(opts){
+    $.each($(this),function(){
+      new $.tabify($(this),opts);
+    });
+  }
 })(jQuery);
 /*
 Links toggle visibility of element specified in href
