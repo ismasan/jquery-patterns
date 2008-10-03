@@ -127,10 +127,9 @@ OPTIONS:
     var links = this.elem.find(o.tab);
     var show = function(){
       if(current){
-		// if()
         hide(current,o.speed);
       }
-	  var is_current = (current!=null && current.attr('href') == $(this).attr('href'));
+      var is_current = (current!=null && current.attr('href') == $(this).attr('href'));
       if(o.hide_self && is_current){//close
         current = null;
         return false;
