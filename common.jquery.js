@@ -12,6 +12,21 @@ jQuery.ajaxSetup({
 });
 
 /*
+Detect an element with given conditions passing an iterator function
+USAGE (silly, because you can do this with a selector):
+
+var e = $('div').detect( function(i){return i.attr('id') == 'blah'} );
+--------------------------------------------------------------*/
+(function($){
+  $.fn.detect = function(it){
+    var found = false;
+    this.each(function(){
+      if(it($(this))){found=$(this);return false};
+    });
+    return found;
+  }
+})(jQuery);
+/*
 Submits a link href via ajax, with optional method method.
 - passing 'DELETE' would turn a GET into an http DELETE
 USAGE:
