@@ -296,3 +296,35 @@ $('div.columns').equalHeight();
 		$(this).css('height',max_height+'px');
 	}
 })(jQuery);
+
+/*
+Placeholder text for your inputs, ie. search boxes
+
+Only adds placeholder text to input if field is empty. Clears the input on focus.
+Adds and removes CSS class "placeholder" to/from the input so you can style the placeholder state.
+
+CSS:
+input#search_field {color:#666}
+
+Javascript:
+$('input#search_field').placeholder('Use this box to search');
+------------------------------------------------------*/
+;(function($){
+  $.fn.placeholder = function(placeholderValue){
+    
+    $(this).focus(function() {
+      if($(this).val() == placeholderValue) {
+        $(this).removeClass('placeholder');
+        $(this).val('');
+      }
+    });
+
+    $(this).blur(function(){
+      if($(this).val() === '') {
+        $(this).addClass('placeholder');
+        $(this).val(placeholderValue);
+      }
+    });
+    $(this).trigger('blur');
+  }
+})(jQuery);
