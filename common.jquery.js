@@ -311,20 +311,21 @@ $('input#search_field').placeholder('Use this box to search');
 ------------------------------------------------------*/
 ;(function($){
   $.fn.placeholder = function(placeholderValue){
-    
-    $(this).focus(function() {
+    var $self = $(this);
+    $self.focus(function() {
       if($(this).val() == placeholderValue) {
-        $(this).removeClass('placeholder');
-        $(this).val('');
+        $(this).removeClass('placeholder').val('');
       }
-    });
-
-    $(this).blur(function(){
+    }).blur(function(){
       if($(this).val() === '') {
-        $(this).addClass('placeholder');
-        $(this).val(placeholderValue);
+        $(this).addClass('placeholder').val(placeholderValue);
       }
-    });
+    }).parents('form').submit(function(){
+      if($self.val() == placeholderValue) {
+       $self.val('')
+      }
+    })
+    
     $(this).trigger('blur');
   }
 })(jQuery);
