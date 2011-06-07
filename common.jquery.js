@@ -303,29 +303,32 @@ Placeholder text for your inputs, ie. search boxes
 Only adds placeholder text to input if field is empty. Clears the input on focus.
 Adds and removes CSS class "placeholder" to/from the input so you can style the placeholder state.
 
-CSS:
-input#search_field {color:#666}
+HTML:
+
+<input placeholder="Some text here" name="user_name" type="text" />
 
 Javascript:
-$('input#search_field').placeholder('Use this box to search');
+$('input[placeholder]').placeholder();
 ------------------------------------------------------*/
-;(function($){
-  $.fn.placeholder = function(placeholderValue){
-    var $self = $(this);
-    $self.focus(function() {
-      if($(this).val() == placeholderValue) {
-        $(this).removeClass('placeholder').val('');
-      }
-    }).blur(function(){
-      if($(this).val() === '') {
-        $(this).addClass('placeholder').val(placeholderValue);
-      }
-    }).parents('form').submit(function(){
-      if($self.val() == placeholderValue) {
-       $self.val('')
-      }
+$.fn.placeholder = function () {
+    if($.browser.webkit || $.browser.mozilla) return true;
+    return $(this).each(function () {
+      var placeholderValue = $(this).attr('placeholder');
+      var $self = $(this);
+      $self.focus(function() {
+        if($(this).val() == placeholderValue) {
+          $(this).removeClass('placeholder').val('');
+        }
+      }).blur(function(){
+        if($(this).val() === '') {
+          $(this).addClass('placeholder').val(placeholderValue);
+        }
+      }).parents('form').submit(function(){
+        if($self.val() == placeholderValue) {
+         $self.val('')
+        }
+      })
+
+      $(this).trigger('blur');
     })
-    
-    $(this).trigger('blur');
   }
-})(jQuery);
